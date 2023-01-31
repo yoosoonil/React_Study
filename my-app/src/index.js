@@ -10,11 +10,12 @@ import NotificationList from "./chapter_06/NotificationList";
 import Accommodate from "./chapter_07/Accommodate";
 import ConfirmButton_class from "./chapter_08/ConfirmButtonclass";
 import ConfirmButtonfunction from "./chapter_08/ConfirmButtonfunction";
+import LandingPage from "./chapter_09/LandingPage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ConfirmButtonfunction />
+    <LandingPage />
   </React.StrictMode>
 );
 
