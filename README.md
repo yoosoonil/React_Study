@@ -184,7 +184,7 @@ useEffect(() => {
 #### Memoization
 > Memoized value
 
-
+1. useMemo() Hook
 ```jsx
 // useMemo Hook은 랜더링이 일어나는 동안 실행된다.
 const memoizedValue = useMemo(
@@ -207,4 +207,293 @@ const memoizedValue = useMemo(
 	},
 	[]
 );
+```
+
+2. useCallback() Hook
+```jsx
+const memoizedCallback = useCallback(
+	() => {
+		doSomething(의존성 변수1, 의존성 변수2);
+	},
+	[의존성 변수1, 의존성 변수2]
+);
+
+// 동일한 역할을 하는 두 줄의 코드
+useCallback(함수, 의존성 배열);
+useMemo(() => 함수, 의존성 배열);
+
+// 예시
+import { useState } from "react";
+
+function ParentComponent(props) {
+	const [count, setCount] = useState(0);
+
+	// 재렌더링 될 때마다 매번 함수가 새로 정의됨
+	const handleClick = (event) => {
+		// 클릭 이벤트 처리
+	}
+
+	return (
+		<div>
+			<button onClick={() => {
+				setCount(count + 1);
+			}}>
+			{count}
+			</button>
+
+			<ChildComponent handleClick={handleClick}/>
+		</div>
+	);
+}
+```
+
+3. useRef() Hook
+> Reference를 사용하기 위한 Hook
+> Reference란 특정 컴포넌트에 접급할 수 있는 객체
+- refObject.current -> current는 현재 참조하고 있는 Element
+- useRef() Hook은 내부의 데이터가 변경되었을 때 별도로 알리지 않는다.
+
+```jsx
+// useRef() 사용법
+const refContainer = useRef(초기값);
+
+// useRef를 이용하여 버튼 클릭시 input에 focus를 실행
+function TextInputWithFocusButton(props) {
+	const inputElem = useRef(null);
+
+	const onButtonClick = () => {
+		// `current`는 마운트된 input element를 가리킴
+		inputElem.current.focus();
+	};
+
+	return (
+		<>
+			<input ref={inputElem} type="text"/>
+			<button onClick={onButtonClick}>
+				Focus the input
+			</button>
+		</>
+	);
+}
+
+// Callback ref
+function MeasureExample(props) {
+	const [height, setHeight] = useState(0);
+
+	const measureRef = useCallback(node => {
+		if (node !== null ) {
+			setHeight(node.getBoundingClientRect().height);
+		}
+	}, []);
+
+	return (
+		<>
+			<h1 ref={measuredRef}>안녕, 리액트</h1>
+			<h2>위 헤더의 높이는 {Math.round(height)px 입니다.}</h2>
+		</>
+	);
+}
+```
+1. Hook의 규칙
+- Hook은 무조건 최상위 레벨에서만 호출해야 한다.
+- Hook은 컴포넌트가 렌더링될 때마다 매번 같은 순서로 호출되어야 한다.
+- 리액트 함수 컴포넌트에서만 Hook을 호출해야 한다.
+
+```jsx
+// 잘못된 Hook 사용법
+// if문의 조건이 true인 경우에만 useEffect hook을 호출
+// 이런 경우, 중간에 name의 값이 빈 문자열이 되면 조건문의 값이 false가 되며
+// useEffect hook이 호출되지 않음.
+// 결과적으로 렌더링 할때마다 hook이 같은 순서대로 호출되는 것이 아니라
+// 조건문의 결과에 따라 호출되는 hook이 달라지므로 잘못된 Hook이다.
+function MyComponent(props) {
+	const [name, setName] = useState('Inje');
+
+	if (name !== '') {
+		useEffect(() => {
+			...
+		});
+	}
+	...
+}
+```
+
+2. Cumstom Hook의 규칙
+- Cumstom Hook의 이름은 꼭 use로 시작해야 한다.
+- 여러 개의 컴포넌트에서 하나의 Custom Hook을 사용할 때 컴포넌트 내부에 있는 모든 state와 effects는 전부 분리되어있다.
+- 각 Custom Hook 호출에 대해서 분리된 state를 얻게 됨.
+
+
+### Event
+
+1. DOM의 Event
+```jsx
+// 버튼을 누르면 activate라는 함수를 호출
+<button onclick="activate()">
+	Activate
+</button>
+```
+2. React의 Event
+```jsx
+// 카멜표기법으로 되어있다. 함수를 그대로 전달
+<button onClick={activate}>
+	Activate
+</button>
+```
+3. Event Handler
+> 어떤 사건이 발생하면, 사건을 처리하는 역할
+
+### Conditional Rendering
+> 조건에 따른 렌더링 즉, 조건부 렌더링
+
+```jsx
+// 예시
+function UserGreeting(props) {
+	return <h1>다시 오셨군요!</h1>;
+}
+
+function GuestGreeting(props) {
+	return <h1>회원가입 해주세요.</h1>;
+}
+
+function Greeting(props) {
+	const isLoggedIn = props.isLoggedIn;
+
+	// 로그인 했다면 UserGreeting 호출
+	if (isLoggedIn) {
+		return <UserGreeting />;
+	}
+	// guest라면 GusetGreeting 호출
+	return <GuestGreeting />;
+}
+```
+
+1. Boolean 자료형
+> 참(True)/거짓(False)
+
+- Truthy : true는 아니지만, true로 여겨지는 값
+- Falsy : false는 아니지만, false로 여겨지는 값
+
+```jsx
+// truthy
+true는
+{} (empty object)
+[] (empty array)
+42 (number, not zero)
+"0", "false" (string, not empty)
+
+// falsy
+false
+0, -0 (zero, minus zero)
+0n (BigInt zero)
+'', "", `` (empty string)
+null
+undefined
+NaN (not a number)
+```
+
+2. Element Variables
+```jsx
+function LoginButton(props) {
+	return (
+		<button onClick={props.onClick}>
+			로그인
+		</button>
+	);
+}
+
+function LogoutButton(props) {
+	return (
+		<button onClick={props.onClick}>
+			로그아웃
+		</button>
+	)
+}
+
+function LoginControl(props) {
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+	const handleLoginClick = () => {
+		setIsLoggedIn(true);
+	}
+
+	const handleLogoutClick = () => {
+		setIsLoggedIn(false);
+	}
+
+	// 조건에 따라 button이라는 컴포넌트에 대입하는 것이 달라짐.
+	let button;
+	if (isLoggedIn) {
+		button = <LogoutButton onClick={handleLogoutClick} />;
+	} else {
+		button = <LoginButton onClick={handleLoginClick} />;
+	}
+
+	// 컴포넌트가 렌더링 되도록 만듦
+	return (
+		<div>
+			<Greeting isLoggedIn={isLoggedIn} />
+			{button}
+		</div>
+	)
+}
+```
+
+3. Inline Conditions
+> 조건문을 코드 안에 집어넣는 것
+
+- Inline If
+  - if문의 경우 && 연산자를 사용
+  - true && expression -> expression
+  - fals && expression -> false
+
+```jsx
+// 예시
+function Mailbox(props) {
+	const unreadMessages = props.unreadMessages;
+
+	return (
+		<div>
+			<h1>안녕하세요!</h1>
+			{unreadMessages.length > 0 &&
+				<h2>
+					현재 {unreadMessages.length}개의 읽지 않은 메시지가 있습니다.
+				</h2>
+			} 
+		</div>
+	);
+}
+```
+
+- Inline if-else
+> if-else문의 경우 ? 연산자를 사용
+
+?(삼항연산자)
+condition ? true : false -> 컨디션이 true이면 true를, false이면 false를 반환
+
+```jsx
+// isLoggIn이 true면 로그인, false면 로그인하지 않음을 반환
+function UserStatus(props) {
+	return (
+		<div>
+			이 사용자는 현재 <b>{props.isLoggedIn ? '로그인' : '로그인하지 않음'}</b> 상태입니다.
+		</div>
+	);
+}
+```
+
+- Component 렌더링 막기
+  - null을 리턴하면 렌더링하지 않음
+
+```jsx
+// null이 리턴되면 경고! 문구를 리턴함.
+function WarningBanner(props) {
+	if (!props.warning) {
+		return null;
+	}
+
+	return (
+		<div>경고!</div>
+	);
+}
 ```
