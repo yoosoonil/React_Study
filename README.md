@@ -247,7 +247,7 @@ function ParentComponent(props) {
 }
 ```
 
-3. useRef() Hook
+**3. useRef() Hook**
 > Reference를 사용하기 위한 Hook
 > Reference란 특정 컴포넌트에 접급할 수 있는 객체
 - refObject.current -> current는 현재 참조하고 있는 Element
@@ -294,7 +294,7 @@ function MeasureExample(props) {
 	);
 }
 ```
-1. Hook의 규칙
+**1. Hook의 규칙**
 - Hook은 무조건 최상위 레벨에서만 호출해야 한다.
 - Hook은 컴포넌트가 렌더링될 때마다 매번 같은 순서로 호출되어야 한다.
 - 리액트 함수 컴포넌트에서만 Hook을 호출해야 한다.
@@ -318,7 +318,7 @@ function MyComponent(props) {
 }
 ```
 
-2. Cumstom Hook의 규칙
+**2. Cumstom Hook의 규칙**
 - Cumstom Hook의 이름은 꼭 use로 시작해야 한다.
 - 여러 개의 컴포넌트에서 하나의 Custom Hook을 사용할 때 컴포넌트 내부에 있는 모든 state와 effects는 전부 분리되어있다.
 - 각 Custom Hook 호출에 대해서 분리된 state를 얻게 됨.
@@ -326,21 +326,21 @@ function MyComponent(props) {
 
 ### Event
 
-1. DOM의 Event
+**1. DOM의 Event**
 ```jsx
 // 버튼을 누르면 activate라는 함수를 호출
 <button onclick="activate()">
 	Activate
 </button>
 ```
-2. React의 Event
+**2. React의 Event**
 ```jsx
 // 카멜표기법으로 되어있다. 함수를 그대로 전달
 <button onClick={activate}>
 	Activate
 </button>
 ```
-3. Event Handler
+**3. Event Handler**
 > 어떤 사건이 발생하면, 사건을 처리하는 역할
 
 ### Conditional Rendering
@@ -368,7 +368,7 @@ function Greeting(props) {
 }
 ```
 
-1. Boolean 자료형
+**1. Boolean 자료형**
 > 참(True)/거짓(False)
 
 - Truthy : true는 아니지만, true로 여겨지는 값
@@ -392,7 +392,7 @@ undefined
 NaN (not a number)
 ```
 
-2. Element Variables
+**2. Element Variables**
 ```jsx
 function LoginButton(props) {
 	return (
@@ -439,7 +439,7 @@ function LoginControl(props) {
 }
 ```
 
-3. Inline Conditions
+**3. Inline Conditions**
 > 조건문을 코드 안에 집어넣는 것
 
 - Inline If
@@ -497,3 +497,85 @@ function WarningBanner(props) {
 	);
 }
 ```
+
+### List and Keys
+
+**1. 여러 개의 Component 렌더링 하기**
+```jsx
+// map()
+const doubled = number.map((number) => number * 2);
+
+// map 함수 예시
+const numbers = [1, 2, 3, 4, 5];
+const listItems = numbers.map((number) =>
+	<li>{number}/li>
+);
+
+ReactDOM.render(
+	<ul>{listItems}</ul>,
+	document.getElementById('root')
+);
+
+// 최종적으로 아래처럼 렌더링
+ReactDOM.render(
+	<ul>
+		<li>{1}</li>
+		<li>{2}</li>
+		<li>{3}</li>
+		<li>{4}</li>
+		<li>{5}</li>	
+	</ul>,
+	document.getElementById('root')
+);
+```
+
+**2. 기본적인 List Component**
+```jsx
+function NumberList(props) {
+	const { numbers } = props;
+
+	const listItems = numbers.map((number) =>
+		<li>{number}</li>
+	);
+
+	return (
+		<ul>{listItems}</ul>
+	);
+}
+
+const numbers = [1, 2, 3, 4, 5];
+ReactDOM.render(
+	<NumberList numbers={numbers} />,
+	document.getElementById('root')
+);
+```
+
+**3. List와 Key**
+- key로 값을 사용하는 경우
+```jsx
+const numbers = [1, 2, 3, 4, 5];
+const listItems = numbers.map((number) =>
+	<li key={number.toString()}>
+		{number}
+	</li>
+);
+```
+- key로 id를 사용하는 경우
+```jsx
+const todoItems = todos.map((todo) =>
+	// 아이템들의 고유한 ID가 없을 경우에만 사용해야 함
+	<li key={todo.id}>
+		{todo.text}
+	</li>
+);
+```
+- key로 index를 사용하는 경우
+```jsx
+const todoItems = todos.map((todo, index) =>
+	// 아이템들의 고유한 ID가 없을 경우에만 사용해야 함
+	<li key={index}>
+		{todo.text}
+	</li>
+);
+```
+- map() 함수 안에 있는 Elements는 꼭 key가 필요하다!
