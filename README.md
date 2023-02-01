@@ -579,3 +579,52 @@ const todoItems = todos.map((todo, index) =>
 );
 ```
 - map() 함수 안에 있는 Elements는 꼭 key가 필요하다!
+
+### Form
+> Form은 사용자로부터 입력을 받기 위해 사용
+
+**1. Controlled Components**
+> 값이 리액트의 통제를 받는 Input Form Element
+- HTML Form : 자체적으로 state를 관리
+  - input_state, textarea_state, select_state
+- Controlled Component : 모든 데이터를 state에서 관리
+  - Component의 state = {}, setState()
+
+**2. Textarea 태그**
+- HTML textarea 태그
+```jsx
+<textarea>
+	안녕하세요, 여기에 이렇게 택스트가 들어가게 됩니다.
+</textarea>
+```
+
+**3. Select 태그**
+> Drop-down 목록을 보여주기 위한 HTML 태그
+
+```js
+<select>
+	<option value="apple">사과</option>
+	<option value="banana">바나나</option>
+	<option selected value="grape">포도</option>
+	<option value="apple">수박</option>
+</select>
+```
+
+**4. File input 태그**
+> 디바이스의 저장 장치로부터 하나 또는 여러 개의 파일을 선택할 수 있게 해주는 HTML 태그
+> Uncontrolled Component
+```jsx
+<input type="file"/>
+```
+
+**5. Input Null Value**
+```jsx
+// value값이 정해져서 입력이 불가능이지만,
+ReactDOM.render(<input value="hi"/>, rootNode);
+// value값을 null로 만들면서 입력이 가능하게 만들어진다.
+setTimeout(function() {
+	ReactDOM.render(<input value={null}/>, rootNode);
+}, 1000);
+
+```
+
