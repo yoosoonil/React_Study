@@ -628,3 +628,98 @@ setTimeout(function() {
 
 ```
 
+### Shared State
+
+1. 하위 컴포넌트에서 State 공유
+```jsx
+// 예시
+function BoilingVerdict(props) {
+	if (props.celsius >= 100) {
+		return <p>물이 끓습니다.</p>;
+	}
+	return <p>물이 끓지 않습니다.</p>;
+}
+
+function Calculator(props) {
+	const [temperature, setTemperature] = useState('');
+
+	const handleChange = (event) => {
+		setTemperature(event.target.value);
+	}
+
+	return (
+		<fieldset>
+			<legend>섭씨 온도를 입력하세요:</legend>
+			<input
+				value={temperature}
+				onChange={handleChange}
+				/>
+			<BoilingVerdict
+				celsius={parseFloat(temperature)} />
+		</fieldset>
+	)
+}
+```
+```jsx
+const scaleNames = {
+	c: '섭씨',
+	f: '화씨'
+};
+
+function temperatureInput(props) {
+	const [temperature, setTemperature] = useState('');
+
+	const handleChange = (event) => {
+		setTemperature(event.target.value);
+	}
+
+	return (
+		<fieldset>
+			<legend>
+				온도를 입력해 주세요(단위:{scaleNames[props.scale]});
+			</legend>
+			<input value={temperature} onChange={handleChange}/>
+		</fieldset>
+	)
+}
+
+function Calculator(props) {
+	return (
+		<div>
+			<temperatureInput scale="c" />
+			<temperatureInput scale="f" />
+		</div>
+	);
+}
+// 섭씨온도 계산
+function toCelsius(fahrenheit) {
+	return (fahrenheit - 32) * 5 / 9;
+}
+// 화씨온도 계산
+function toFahrenheit(celsius) {
+	return (celsius * 9 / 5) + 32;
+}
+
+function tryConvert(temperature, convert) {
+	const input = parseFloat(temperature);
+	if (Number.isNaN(input)) {
+		return '';
+	}
+	const output = convert(input);
+	const rounded = Math.round(output * 1000) / 1000;
+	return rounded.toString();
+}
+
+tryConvert('abc', toCelsius); // empty string을 리턴
+tryConvert('10.22', toFahrenheit); // '50.396'을 리턴
+```
+**2. Shared State 적용하기**
+- 하위 컴포넌트의 state를 공통 상위 컴포넌트로 올림
+```jsx
+return (
+	...
+		// 변경 전: <input value={temperature} onChange={handleChange}/>
+		<input value={props.temperature} onChange={handleChange} />
+	...
+)
+```
